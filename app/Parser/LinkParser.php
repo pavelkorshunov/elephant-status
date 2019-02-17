@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Parser;
+
+use App\Contracts\Parser;
+
+class LinkParser implements Parser
+{
+    /**
+     * Содержит список всех ссылок в виде объекта \DOMNodeList
+     *
+     * @var \DOMNodeList
+     */
+    private $links;
+
+    /**
+     * Массив всех ссылок с анкорами и контентом
+     *
+     * @var array
+     */
+    public $linksData = [];
+
+    /**
+     * Инициализация параметров
+     *
+     * @param string $html
+     * @return void
+     */
+    public function __construct(string $html)
+    {
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html);
+        $this->links = $dom->getElementsByTagName('a');
+    }
+
+    /**
+     * Возвращает текст ссылки или false если у ссылки текст отсутствует
+     *
+     * @param \DOMNodeList object $domLink
+     * @return mixed
+     */
+    public function getTextContent($domLink)
+    {
+        $linkText = trim($domLink->textContent);
+        if(empty($linkText)) {
+            return false;
+        }
+        return $linkText;
+    }
+
+    /**
+     * Возвращает анкор ссылки либо false
+     *
+     * @param \DOMNodeList object $domLink
+     * @return mixed
+     */
+    public function getAttrHref($domLink)
+    {
+        $href = $domLink->getAttribute('href');
+        if(empty($href)) {
+            return false;
+        }
+        return $href;
+    }
+
+    /**
+     * Производит парсинг всех ссылок на странице и возвращает массив с их содержимым
+     *
+     * @return array
+     */
+    public function parse(): array
+    {
+        foreach ($this->links as $count => $link) {
+            $linkData = [
+                "content" => trim($link->textContent),
+                "href" => $link->getAttribute('href')
+            ];
+
+            $this->linksData[$count] = $linkData;
+        }
+
+        return $this->linksData;
+    }
+}
