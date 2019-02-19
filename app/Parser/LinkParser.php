@@ -68,7 +68,7 @@ class LinkParser implements Parser
      *
      * @return array
      */
-    public function parse(): array
+    public function parseAll(): array
     {
         foreach ($this->links as $count => $link) {
             $linkData = [
@@ -80,5 +80,26 @@ class LinkParser implements Parser
         }
 
         return $this->linksData;
+    }
+
+    /**
+     * Возвращает массив ссылок только с существующим анкором, пустые ссылки удаляются
+     *
+     * @return array
+     */
+    public function parse(): array
+    {
+        $this->parseAll();
+
+        $filtered = array_filter($this->linksData, function($value){
+            $clear = str_one_spacing($value['content']);
+            return $clear;
+        });
+
+        foreach ($filtered as $key => $filter) {
+            $filtered[$key]['content'] = str_one_spacing($filter['content']);
+        }
+
+        return $filtered;
     }
 }

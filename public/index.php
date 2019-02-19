@@ -7,4 +7,5 @@ use App\Parser\LinkParser;
 $body = file_get_contents(ROOTDIR . '/test.html');
 
 $parser = new LinkParser($body);
-dumpd($parser->parse());
+
+print_r($parser->parse());
