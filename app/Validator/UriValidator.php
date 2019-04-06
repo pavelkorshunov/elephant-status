@@ -36,7 +36,7 @@ class UriValidator implements Validator
     /**
      * Проверяет на соответствие протоколу http или https
      *
-     * @param $scheme
+     * @param string $scheme
      * @return boolean
      */
     protected function isHttp(string $scheme): bool
@@ -62,5 +62,24 @@ class UriValidator implements Validator
         }
 
         return false;
+    }
+
+    /**
+     * Удаляет все повторяющиеся ссылки в массиве
+     *
+     * @param array $repeat
+     * @return array
+     */
+    public static function uniqueUrl(array $repeat): array
+    {
+        // TODO убрать из массива ссылки вида /club_cards и /club_cards/
+        $unique = [];
+
+        foreach ($repeat as $item) {
+            if(!in_array($item, $unique) && $item !== "/") {
+                array_push($unique, $item);
+            }
+        }
+        return $unique;
     }
 }
