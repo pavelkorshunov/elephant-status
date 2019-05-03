@@ -27,8 +27,6 @@ final class RequestClient
 
     private function __clone() { }
 
-    private function __wakeup() { }
-
     private function __construct() { }
 
     public static function getInstance()

@@ -10,7 +10,7 @@ use App\Parser\SitemapParser;
 //$body = file_get_contents(ROOTDIR . '/test.html');
 
 $sitemap = new SitemapParser();
-$sitemap->parse();
+print_r($sitemap->parse());
 
 
 //$client = RequestClient::getInstance();

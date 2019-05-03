@@ -33,24 +33,25 @@ class SitemapParser implements Parser
     public function parse(): array
     {
         $response = $this->client->request("GET", $this->sitemapPath);
-        $body = $response->getBody();
+        $body = (string) $response->getBody();
+
+        $xmlList = [];
 
         try {
             $xml = new \SimpleXMLElement($body);
 
-            $xmlList = [];
-            foreach ($xml->url as $element) {
-                array_push($xmlList, $element->loc);
-                print_r(gettype($element->loc));
-            }
+            if(0 !== $xml->count()) {
 
-            return $xmlList;
+                foreach($xml->url as $nodeName => $nodeValue) {
+                    $clearString = trim($nodeValue->loc->__toString());
+                    array_push($xmlList, $clearString);
+                }
+            }
 
         } catch (\Exception $e) {
             echo $e;
         }
 
-        return [];
-        // TODO: Implement parse() method.
+        return $xmlList;
     }
 }
