@@ -2,15 +2,28 @@
 require '../config/config.php';
 require '../vendor/autoload.php';
 
-use App\Parser\LinkParser;
-use App\Validator\UriValidator;
+//use App\Parser\LinkParser;
+//use App\Validator\UriValidator;
 use App\Http\RequestClient;
 use App\Parser\SitemapParser;
 
 //$body = file_get_contents(ROOTDIR . '/test.html');
 
 $sitemap = new SitemapParser();
-print_r($sitemap->parse());
+$sitemapLinks = $sitemap->parse();
+
+$client = RequestClient::getInstance();
+
+foreach ($sitemapLinks as $linkCount => $slink) {
+
+    if($linkCount < 2) {
+        $response = $client->get($slink, ['http_errors' => false]);
+
+        echo $slink . "<br>";
+        echo $response->getStatusCode() . "<br>";
+    }
+
+}
 
 
 //$client = RequestClient::getInstance();

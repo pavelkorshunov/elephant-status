@@ -21,9 +21,31 @@ class SitemapParser implements Parser
      */
     private $client;
 
+    /**
+     * Тело карты сайта
+     *
+     * @var string
+     */
+    private $sitemapBody;
+
+    /**
+     *
+     *
+     */
     public function __construct()
     {
         $this->client = RequestClient::getInstance();
+    }
+
+    /**
+     * Отправляет запрос на получение тела карты сайта
+     *
+     *
+     */
+    private function sendRequest()
+    {
+        $response = $this->client->request("GET", $this->sitemapPath);
+        $this->sitemapBody = (string) $response->getBody();
     }
 
     /**
@@ -32,13 +54,11 @@ class SitemapParser implements Parser
      */
     public function parse(): array
     {
-        $response = $this->client->request("GET", $this->sitemapPath);
-        $body = (string) $response->getBody();
-
+        $this->sendRequest();
         $xmlList = [];
 
         try {
-            $xml = new \SimpleXMLElement($body);
+            $xml = new \SimpleXMLElement($this->sitemapBody);
 
             if(0 !== $xml->count()) {
 
@@ -49,6 +69,7 @@ class SitemapParser implements Parser
             }
 
         } catch (\Exception $e) {
+            // TODO normal Exception
             echo $e;
         }
 

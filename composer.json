@@ -10,6 +10,7 @@
   "require": {
     "php": ">=7.1",
     "ext-dom": "*",
+    "ext-simplexml": "*",
     "guzzlehttp/guzzle": "6.3.3"
   },
   "autoload": {
