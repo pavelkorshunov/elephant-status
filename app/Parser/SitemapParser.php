@@ -49,6 +49,21 @@ class SitemapParser implements Parser
     }
 
     /**
+     * Проверяет является ли url xml файлом
+     *
+     * @param string $url
+     * @return boolean
+     */
+    public function isXmlUrl(string $url) : bool
+    {
+        $xml = strstr($url, ".xml");
+        if($xml === ".xml") {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      *
      *
      */
