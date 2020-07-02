@@ -4,8 +4,8 @@ require '../vendor/autoload.php';
 
 //use App\Parser\LinkParser;
 //use App\Validator\UriValidator;
-use App\Http\RequestClient;
-use App\Parser\SitemapParser;
+use Elephant\Http\RequestClient;
+use Elephant\Parser\SitemapParser;
 
 //$body = file_get_contents(ROOTDIR . '/test.html');
 

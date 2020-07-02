@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Parser;
+namespace Elephant\Parser;
 
-use App\Contracts\Parser;
-use App\Http\RequestClient;
+use Elephant\Contracts\Parser;
+use Elephant\Http\RequestClient;
 
 class SitemapParser implements Parser
 {
@@ -44,6 +44,7 @@ class SitemapParser implements Parser
      */
     private function sendRequest()
     {
+        // TODO бросить исключение
         $response = $this->client->request("GET", $this->sitemapPath);
         $this->sitemapBody = (string) $response->getBody();
     }

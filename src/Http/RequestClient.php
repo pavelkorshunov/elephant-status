@@ -6,7 +6,7 @@
  * (c) Pavel Korshunov <info@hard-skills.ru>
  */
 
-namespace App\Http;
+namespace Elephant\Http;
 
 use GuzzleHttp\Client;
 
@@ -29,6 +29,9 @@ final class RequestClient
 
     private function __construct() { }
 
+    /**
+     * @return Client
+     */
     public static function getInstance()
     {
         if(null === self::$instance) {

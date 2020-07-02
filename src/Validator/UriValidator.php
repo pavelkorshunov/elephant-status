@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Validator;
+namespace Elephant\Validator;
 
-use App\Contracts\Validator;
+use Elephant\Contracts\Validator;
 
 class UriValidator implements Validator
 {
