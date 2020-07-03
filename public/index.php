@@ -1,31 +1,18 @@
 <?php
-require '../config/config.php';
+//require '../config/config.php';
 require '../vendor/autoload.php';
 
 //use App\Parser\LinkParser;
 //use App\Validator\UriValidator;
-use Elephant\Http\RequestClient;
-use Elephant\Parser\SitemapParser;
+use Elephant\Elephant;
+
+$elephant = new Elephant([
+    "base_uri" => "https://hard-skills.ru"
+]);
+
+$elephant->generateReport();
 
 //$body = file_get_contents(ROOTDIR . '/test.html');
-
-$sitemap = new SitemapParser();
-$sitemapLinks = $sitemap->parse();
-
-$client = RequestClient::getInstance();
-
-foreach ($sitemapLinks as $linkCount => $slink) {
-
-    if($linkCount < 2) {
-        $response = $client->get($slink, ['http_errors' => false]);
-
-        echo $slink . "<br>";
-        echo $response->getStatusCode() . "<br>";
-    }
-
-}
-
-
 //$client = RequestClient::getInstance();
 //
 //$response = $client->request("GET", "/", ['http_errors' => false]);

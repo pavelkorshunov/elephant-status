@@ -4,6 +4,7 @@ namespace Elephant\Parser;
 
 use Elephant\Contracts\Parser;
 use Elephant\Http\RequestClient;
+use GuzzleHttp\Exception\GuzzleException;
 
 class SitemapParser implements Parser
 {
@@ -12,7 +13,7 @@ class SitemapParser implements Parser
      *
      * @var string
      */
-    private $sitemapPath = "/sitemap.xml";
+    private $sitemapPath;
 
     /**
      * Объект клиента
@@ -28,24 +29,38 @@ class SitemapParser implements Parser
      */
     private $sitemapBody;
 
-    /**
-     *
-     *
-     */
     public function __construct()
     {
         $this->client = RequestClient::getInstance();
+        $this->setSitemapPath("sitemap.xml");
+    }
+
+    /**
+     * @return string
+     */
+    public function getSitemapPath(): string
+    {
+        return $this->sitemapPath;
+    }
+
+    /**
+     * @param string $sitemapPath
+     */
+    public function setSitemapPath(string $sitemapPath): void
+    {
+        $this->sitemapPath = $sitemapPath;
     }
 
     /**
      * Отправляет запрос на получение тела карты сайта
      *
-     *
+     * @throws GuzzleException
+     * @return void
      */
-    private function sendRequest()
+    private function setHttpSitemapBody(): void
     {
-        // TODO бросить исключение
-        $response = $this->client->request("GET", $this->sitemapPath);
+        $path = "/" . $this->sitemapPath;
+        $response = $this->client->request("GET", $path);
         $this->sitemapBody = (string) $response->getBody();
     }
 
@@ -65,12 +80,14 @@ class SitemapParser implements Parser
     }
 
     /**
+     * Парсинг карты сайта
      *
-     *
+     * @throws GuzzleException
+     * @return array
      */
     public function parse(): array
     {
-        $this->sendRequest();
+        $this->setHttpSitemapBody();
         $xmlList = [];
 
         try {
