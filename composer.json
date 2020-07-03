@@ -12,6 +12,7 @@
   "require": {
     "php": ">=7.1",
     "ext-dom": "*",
+    "ext-mbstring": "*",
     "ext-simplexml": "*",
     "guzzlehttp/guzzle": "6.3.3"
   },

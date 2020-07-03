@@ -29,24 +29,7 @@ class SitemapParser implements Parser
      */
     private $sitemapBody;
 
-    public function __construct()
-    {
-        $this->client = RequestClient::getInstance();
-        $this->setSitemapPath("sitemap.xml");
-    }
-
-    /**
-     * @return string
-     */
-    public function getSitemapPath(): string
-    {
-        return $this->sitemapPath;
-    }
-
-    /**
-     * @param string $sitemapPath
-     */
-    public function setSitemapPath(string $sitemapPath): void
+    public function __construct(string $sitemapPath = 'sitemap.xml')
     {
         $this->sitemapPath = $sitemapPath;
     }
@@ -107,5 +90,13 @@ class SitemapParser implements Parser
         }
 
         return $xmlList;
+    }
+
+    /**
+     * @param RequestClient $client
+     */
+    public function setClient(RequestClient $client): void
+    {
+        $this->client = $client;
     }
 }

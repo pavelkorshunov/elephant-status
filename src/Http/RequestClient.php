@@ -16,41 +16,11 @@ use GuzzleHttp\Client;
  * @author Pavel Korshunov <info@hard-skills.ru>
  */
 
-final class RequestClient
+final class RequestClient extends Client
 {
-    /**
-     * Объект клиента
-     *
-     * @var Client
-     */
-    private static $instance;
-
-    private static $baseUrl;
-
-    private function __clone() { }
-
-    private function __construct() { }
-
-    /**
-     * @return Client
-     */
-    public static function getInstance()
+    public function __construct(array $setting, array $config = [])
     {
-        if(self::$instance === null) {
-
-            self::$instance = new Client([
-                'base_uri' => self::$baseUrl
-            ]);
-
-            return self::$instance;
-        }
-
-        return self::$instance;
-    }
-
-    // TODO подумать как улучшить, чтобы не устанавливать урл сайта здесь
-    public static function setBaseUrl($url)
-    {
-        self::$baseUrl = $url;
+        $localConfig = array_merge(['base_uri' => $setting['base_uri']], $config);
+        parent::__construct($localConfig);
     }
 }

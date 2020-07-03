@@ -21,23 +21,32 @@ class UriValidator implements Validator
     protected $url;
 
     /**
+     * @var array|false|int|string|null
+     */
+    protected $parseUrl;
+
+    /**
      * Конструктор заполняет параметры
      *
      * @param string $host
      * @param string $uri
      * @return void
      */
-    public function __construct(string $host, string $uri)
+    public function __construct(string $uri, string $host = "")
     {
-        $this->host = $host;
         $this->url = $uri;
+        $this->host = $host;
+
+        if($uri != '') {
+            $this->parseUrl = parse_url($this->url);
+        }
     }
 
     /**
      * Проверяет на соответствие протоколу http или https
      *
      * @param string $scheme
-     * @return boolean
+     * @return bool
      */
     protected function isHttp(string $scheme): bool
     {
@@ -45,19 +54,18 @@ class UriValidator implements Validator
     }
 
     /**
-     * Проверяет url на валидность и возвращает true или false
+     * Проверяет url на валидность
      *
-     * @return boolean
+     * @return bool
      */
     public function valid(): bool
     {
-        $linkData = parse_url($this->url);
-
-        if(isset($linkData["scheme"]) && !$this->isHttp($linkData["scheme"])) {
-            return false;
-        } elseif (isset($linkData["host"]) && $linkData["host"] !== $this->host) {
-            return false;
-        } elseif (isset($linkData["path"]) && strlen($linkData["path"]) > 0) {
+        if(
+            $this->parseUrl !== null
+            && isset($this->parseUrl["host"])
+            && isset($this->parseUrl["scheme"])
+            && $this->isHttp($this->parseUrl["scheme"])
+        ) {
             return true;
         }
 

@@ -2,7 +2,6 @@
 
 namespace Elephant;
 
-use Elephant\Http\RequestClient;
 use Elephant\Parser\SitemapParser;
 use Elephant\Reports\DisplayReport;
 use Elephant\Validator\UriValidator;
@@ -13,11 +12,6 @@ use Elephant\Contracts\{
 
 class Settings
 {
-    /**
-     * @var string
-     */
-    private $baseUri;
-
     /**
      * @var Report
      */
@@ -34,28 +28,61 @@ class Settings
     private $settings;
 
     /**
-     * Settings constructor.
      * @param array $settings
      */
     public function __construct(array $settings)
     {
-        $this->requiredSettings($settings);
+        $this->prepareSettings($settings);
     }
 
     /**
-     * @return string
+     * @param array $settings
      */
-    public function getBaseUri(): string
+    private function prepareSettings(array $settings)
     {
-        return $this->baseUri;
+        $this->prepareUri($settings);
+
+        if(!isset($settings['report']) && !isset($settings['parser'])) {
+            $this->defaultSettings($settings);
+        }
+        // TODO доделать возможность выбирать парсер и форму отчета
     }
 
     /**
-     * @param string $host
+     * @param array $settings
      */
-    public function setBaseUri(string $host): void
+    private function prepareUri(array $settings)
     {
-        $this->baseUri = $host;
+        if (!isset($settings['base_uri'])) {
+            throw new \InvalidArgumentException('base_uri must be filled');
+        }
+
+        $validator = new UriValidator($settings['base_uri']);
+        if(!$validator->valid()) {
+            throw new \InvalidArgumentException('Unable to parse URI: '. $settings['base_uri']);
+        }
+
+        $this->settings['base_uri'] = $settings['base_uri'];
+    }
+
+    /**
+     * @param array $settings
+     */
+    private function defaultSettings(array $settings)
+    {
+        $this->parser = !isset($settings['sitemap']) ?
+            new SitemapParser() :
+            new SitemapParser($settings['sitemap']);
+
+        $this->report = new DisplayReport();
+    }
+
+    /**
+     * @return array
+     */
+    public function getSettings(): array
+    {
+        return $this->settings;
     }
 
     /**
@@ -72,29 +99,5 @@ class Settings
     public function getReport(): Report
     {
         return $this->report;
-    }
-
-    /**
-     * @param array $settings
-     */
-    public function requiredSettings(array $settings)
-    {
-        $this->settings = $settings;
-
-        // TODO использовать UriValidator
-        if (isset($this->settings['base_uri'])) {
-            $this->setBaseUri($this->settings['base_uri']);
-        }
-
-        $this->baseUriInit();
-
-        // TODO доделать возможность выбирать парсер и форму отчета
-        $this->report = new DisplayReport();
-        $this->parser = new SitemapParser();
-    }
-
-    private function baseUriInit()
-    {
-        RequestClient::setBaseUrl($this->baseUri);
     }
 }
