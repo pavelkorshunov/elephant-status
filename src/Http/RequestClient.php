@@ -6,7 +6,7 @@
  * (c) Pavel Korshunov <info@hard-skills.ru>
  */
 
-namespace App\Http;
+namespace Elephant\Http;
 
 use GuzzleHttp\Client;
 
@@ -25,19 +25,32 @@ final class RequestClient
      */
     private static $instance;
 
+    private static $baseUrl;
+
     private function __clone() { }
 
     private function __construct() { }
 
+    /**
+     * @return Client
+     */
     public static function getInstance()
     {
-        if(null === self::$instance) {
+        if(self::$instance === null) {
+
             self::$instance = new Client([
-                'base_uri' => BASE_URL
+                'base_uri' => self::$baseUrl
             ]);
+
             return self::$instance;
         }
 
         return self::$instance;
+    }
+
+    // TODO подумать как улучшить, чтобы не устанавливать урл сайта здесь
+    public static function setBaseUrl($url)
+    {
+        self::$baseUrl = $url;
     }
 }

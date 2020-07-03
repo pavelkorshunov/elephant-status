@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Parser;
+namespace Elephant\Parser;
 
-use App\Contracts\Parser;
+use Elephant\Contracts\Parser;
 
 class LinkParser implements Parser
 {
