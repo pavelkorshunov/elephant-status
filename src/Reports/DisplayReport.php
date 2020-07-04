@@ -2,27 +2,13 @@
 
 namespace Elephant\Reports;
 
-use Elephant\Contracts\Report;
+use Elephant\Contracts\ReportInterface;
 
-class DisplayReport implements Report
+class DisplayReport implements ReportInterface
 {
-    /**
-     * @var string
-     */
-    private $display;
-
-    /**
-     * @param string $display
-     */
-    public function setDisplay(string $display): void
+    // TODO Сделать вместо строки объект результата в котором будут ссылки и их коды ответа
+    public function generate(string $data)
     {
-        $this->display = $display;
+        echo $data;
     }
-
-    public function generate()
-    {
-        echo $this->display;
-    }
-
-
 }

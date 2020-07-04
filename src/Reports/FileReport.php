@@ -2,11 +2,11 @@
 
 namespace Elephant\Reports;
 
-use Elephant\Contracts\Report;
+use Elephant\Contracts\ReportInterface;
 
-class FileReport implements Report
+class FileReport implements ReportInterface
 {
-    public function generate()
+    public function generate(string $data)
     {
         // TODO: Implement generate() method.
     }

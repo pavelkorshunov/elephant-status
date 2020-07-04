@@ -11,8 +11,6 @@ namespace Elephant\Http;
 use GuzzleHttp\Client;
 
 /**
- * Объект класса запроса по принципу шаблона Singleton
- *
  * @author Pavel Korshunov <info@hard-skills.ru>
  */
 

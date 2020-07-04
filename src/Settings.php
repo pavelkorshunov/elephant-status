@@ -2,26 +2,13 @@
 
 namespace Elephant;
 
+use Elephant\Contracts\SettingsInterface;
 use Elephant\Parser\SitemapParser;
 use Elephant\Reports\DisplayReport;
 use Elephant\Validator\UriValidator;
-use Elephant\Contracts\{
-    Report,
-    Parser
-};
 
-class Settings
+class Settings implements SettingsInterface
 {
-    /**
-     * @var Report
-     */
-    private $report;
-
-    /**
-     * @var Parser
-     */
-    private $parser;
-
     /**
      * @var array
      */
@@ -42,10 +29,11 @@ class Settings
     {
         $this->prepareUri($settings);
 
-        if(!isset($settings['report']) && !isset($settings['parser'])) {
+        if(!isset($settings['report']) || !isset($settings['parser'])) {
             $this->defaultSettings($settings);
+        } else {
+            $this->settings = array_merge($this->settings, $settings);
         }
-        // TODO доделать возможность выбирать парсер и форму отчета
     }
 
     /**
@@ -67,14 +55,17 @@ class Settings
 
     /**
      * @param array $settings
+     * @return void
      */
     private function defaultSettings(array $settings)
     {
-        $this->parser = !isset($settings['sitemap']) ?
-            new SitemapParser() :
-            new SitemapParser($settings['sitemap']);
+        $this->settings['report'] = !isset($settings['report']) ?
+            new DisplayReport() :
+            $settings['report'];
 
-        $this->report = new DisplayReport();
+        $this->settings['parser'] = !isset($settings['parser']) ?
+            new SitemapParser() :
+            $settings['parser'];
     }
 
     /**
@@ -83,21 +74,5 @@ class Settings
     public function getSettings(): array
     {
         return $this->settings;
-    }
-
-    /**
-     * @return Parser
-     */
-    public function getParser(): Parser
-    {
-        return $this->parser;
-    }
-
-    /**
-     * @return Report
-     */
-    public function getReport(): Report
-    {
-        return $this->report;
     }
 }
