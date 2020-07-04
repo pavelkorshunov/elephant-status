@@ -4,5 +4,5 @@ namespace Elephant\Contracts;
 
 interface Report
 {
-    public function generate($links);
+    public function generate();
 }
