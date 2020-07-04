@@ -2,6 +2,8 @@
 
 namespace Elephant;
 
+use Elephant\Contracts\ParserInterface;
+use Elephant\Contracts\ReportInterface;
 use Elephant\Http\RequestClient;
 
 class Elephant
@@ -17,7 +19,14 @@ class Elephant
     private $setting;
 
     /**
-     * Elephant constructor.
+     * Пример создания класса с использованием base_uri и массива опций
+     *
+     *    $elephant = new Elephant([
+     *        'base_uri'        => 'http://www.foo.com/',
+     *        'parser'          => new SitemapParser('sitemap.xml', false, 0),
+     *        'report'          => new DisplayReport()
+     *    ]);
+     *
      * @param array $settings
      */
     public function __construct(array $settings)
@@ -28,28 +37,21 @@ class Elephant
 
     public function generateReport()
     {
-        $display = '';
-        $parser = $this->setting->getParser();
+        $checkSettings = $this->setting->getSettings();
+        $parser = $checkSettings['parser'];
+        $report = $checkSettings['report'];
 
-        // TODO подумать как улучшить у класса LinkParser нет сеттера вероятно надо вынести создание классов из метода класса Settings::defaultSettings
-        $parser->setClient($this->client);
-
-        $links = $parser->parse();
-
-        foreach ($links as $linkCount => $slink) {
-
-            if ($linkCount < 2) {
-                $response = $this->client->get($slink, ['http_errors' => false]);
-
-                $display .= $slink . '<br>';
-                $display .= $response->getStatusCode() . '<br>';
-            }
+        if($parser instanceof ParserInterface) {
+            $data = $parser->parse($this->client, $this->setting);
+        } else {
+            throw new \LogicException('ParserInterface not implements for object ' . $parser);
         }
 
-        $report = $this->setting->getReport();
-
-        // TODO подумать как улучшить у класса FileReport нет сеттера
-        $report->setDisplay($display);
-        $report->generate();
+        if($report instanceof ReportInterface) {
+            $report->generate($data);
+        }
+        else {
+            throw new \LogicException('ReportInterface not implements for object ' . $report);
+        }
     }
 }

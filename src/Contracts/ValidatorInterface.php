@@ -2,7 +2,7 @@
 
 namespace Elephant\Contracts;
 
-interface Validator
+interface ValidatorInterface
 {
     public function valid();
 }

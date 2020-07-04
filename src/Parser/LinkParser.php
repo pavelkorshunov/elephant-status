@@ -2,9 +2,11 @@
 
 namespace Elephant\Parser;
 
-use Elephant\Contracts\Parser;
+use Elephant\Contracts\ParserInterface;
+use Elephant\Contracts\SettingsInterface;
+use Elephant\Http\RequestClient;
 
-class LinkParser implements Parser
+class LinkParser implements ParserInterface
 {
     /**
      * Содержит список всех ссылок в виде объекта \DOMNodeList
@@ -85,9 +87,11 @@ class LinkParser implements Parser
     /**
      * Возвращает массив ссылок только с существующим анкором, пустые ссылки удаляются
      *
-     * @return array
+     * @param RequestClient $client
+     * @param SettingsInterface $settings
+     * @return string
      */
-    public function parse(): array
+    public function parse(RequestClient $client, SettingsInterface $settings): string
     {
         $this->parseAll();
 
@@ -99,6 +103,8 @@ class LinkParser implements Parser
         foreach ($filtered as $key => $filter) {
             $filtered[$key]['content'] = str_one_spacing($filter['content']);
         }
+
+        // TODO доделать чтобы возвращал строку которую передаю в отчет. Здесь же или еще где-то отправляю запросы по ссылкам
 
         return $filtered;
     }

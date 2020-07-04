@@ -2,9 +2,9 @@
 
 namespace Elephant\Validator;
 
-use Elephant\Contracts\Validator;
+use Elephant\Contracts\ValidatorInterface;
 
-class UriValidator implements Validator
+class UriValidator implements ValidatorInterface
 {
     /**
      * Host
@@ -29,15 +29,15 @@ class UriValidator implements Validator
      * Конструктор заполняет параметры
      *
      * @param string $host
-     * @param string $uri
+     * @param string $url
      * @return void
      */
-    public function __construct(string $uri, string $host = "")
+    public function __construct(string $url, string $host = '')
     {
-        $this->url = $uri;
+        $this->url = $url;
         $this->host = $host;
 
-        if($uri != '') {
+        if($url != '') {
             $this->parseUrl = parse_url($this->url);
         }
     }
@@ -65,6 +65,26 @@ class UriValidator implements Validator
             && isset($this->parseUrl["host"])
             && isset($this->parseUrl["scheme"])
             && $this->isHttp($this->parseUrl["scheme"])
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Проверяет url на валидность и соответствие текущему хосту
+     *
+     * @return bool
+     */
+    public function validByHost()
+    {
+        if(
+            $this->parseUrl !== null
+            && isset($this->parseUrl["scheme"])
+            && $this->isHttp($this->parseUrl["scheme"])
+            && isset($this->parseUrl["host"])
+            && $this->parseUrl["host"] === $this->host
         ) {
             return true;
         }
