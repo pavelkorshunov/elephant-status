@@ -21,7 +21,7 @@ class Elephant
     /**
      * Пример создания класса с использованием base_uri и массива опций
      *
-     *    $elephant = new Client([
+     *    $elephant = new Elephant([
      *        'base_uri'        => 'http://www.foo.com/',
      *        'parser'          => new SitemapParser('sitemap.xml', false, 0),
      *        'report'          => new DisplayReport()
