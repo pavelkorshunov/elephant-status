@@ -1,26 +1,29 @@
 {
-  "name": "elephant/not-found",
-  "type": "library",
-  "description" : "404 links error parser",
-  "keywords": ["not-found", "404", "404 error"],
-  "authors": [
-    {
-      "name": "Pavel Korshunov",
-      "email": "info@hard-skills.ru"
+    "name": "elephant/status",
+    "type": "library",
+    "description" : "Response link code parser. 404 links error parser",
+    "keywords": ["page-http-code", "not-found", "404", "404 error"],
+    "authors": [
+        {
+            "name": "Pavel Korshunov",
+            "email": "info@hard-skills.ru"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-dom": "*",
+        "ext-mbstring": "*",
+        "ext-simplexml": "*",
+        "guzzlehttp/guzzle": "6.3.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "autoload": {
+        "files": ["src/Support/helpers.php"],
+        "psr-4": {"Elephant\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Elephant\\Tests\\": "tests/"}
     }
-  ],
-  "require": {
-    "php": ">=7.1",
-    "ext-dom": "*",
-    "ext-mbstring": "*",
-    "ext-simplexml": "*",
-    "guzzlehttp/guzzle": "6.3.3"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^8.5"
-  },
-  "autoload": {
-    "files": ["src/Support/helpers.php"],
-    "psr-4": {"Elephant\\": "src/"}
-  }
 }

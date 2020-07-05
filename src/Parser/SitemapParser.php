@@ -182,11 +182,11 @@ class SitemapParser implements ParserInterface
                     continue;
                 }
 
-                // TODO доделать чтобы возвращал строку которую передаю в отчет. Здесь же или еще где-то отправляю запросы по ссылкам
+                // TODO возвращать объект результата, который будет передаваться в отчет
                 // TODO плюс сделать возможность ходить по xml ссылкам в карте сайта
                 if(!$this->isXmlUrl($link)) {
                     $response = $this->client->get($link, ['http_errors' => false, 'allow_redirects' => false]);
-                    $reportText .= $link . '<br>' . $response->getStatusCode() . '<br>';
+                    $reportText .= sprintf('%s <br> %s <br>', $link, $response->getStatusCode());
                     $linksCheck++;
                 }
 

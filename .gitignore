@@ -1,5 +1,6 @@
-$ cat .gitignore
-
-.git
+#folders
 .idea
-/vendor
+/vendor/
+
+#files
+*.cache
