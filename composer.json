@@ -1,7 +1,7 @@
 {
     "name": "elephant/status",
     "type": "library",
-    "description" : "Response link code parser. 404 links error parser",
+    "description" : "Check the response code of the page. Checking for 404 errors on the site.",
     "keywords": [
         "page-http-code",
         "not-found",
