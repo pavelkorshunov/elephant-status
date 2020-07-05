@@ -1,8 +1,14 @@
 {
     "name": "elephant/status",
     "type": "library",
-    "description" : "Response link code parser. 404 links error parser",
-    "keywords": ["page-http-code", "not-found", "404", "404 error"],
+    "description" : "Check the response code of the page. Checking for 404 errors on the site.",
+    "keywords": [
+        "page-http-code",
+        "not-found",
+        "404",
+        "404 error"
+    ],
+    "homepage": "https://github.com/pavelkorshunov/elephant-status",
     "authors": [
         {
             "name": "Pavel Korshunov",
