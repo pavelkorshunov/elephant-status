@@ -1,19 +1,9 @@
 <?php
 require '../vendor/autoload.php';
 
-use Elephant\Elephant;
-use Elephant\Parser\SitemapParser;
-
-$elephant = new Elephant([
-    'base_uri' => 'https://hard-skills.ru',
-    'parser' => new SitemapParser('sitemap-test.xml', false, 2)
-]);
-
-$elephant->generateReport();
-
 //use App\Parser\LinkParser;
 //use App\Validator\UriValidator;
-//require '../config/config.php';
+//require '/config/config.php';
 //$body = file_get_contents(ROOTDIR . '/test.html');
 //$client = RequestClient::getInstance();
 //
