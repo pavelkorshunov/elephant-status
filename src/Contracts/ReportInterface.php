@@ -4,5 +4,5 @@ namespace Elephant\Contracts;
 
 interface ReportInterface
 {
-    public function generate(string $data);
+    public function generate(ResultInterface $result);
 }
