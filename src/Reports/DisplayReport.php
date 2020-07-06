@@ -2,13 +2,34 @@
 
 namespace Elephant\Reports;
 
-use Elephant\Contracts\ReportInterface;
+use Elephant\Contracts\{
+    ReportInterface,
+    ResultInterface
+};
 
 class DisplayReport implements ReportInterface
 {
-    // TODO Сделать вместо строки объект результата в котором будут ссылки и их коды ответа
-    public function generate(string $data)
+    public function generate(ResultInterface $result)
     {
-        echo $data;
+        $links = $result->getLinks();
+        $codes = $result->getCodes();
+
+        if(empty($links)) {
+            echo 'No links were found in the sitemap';
+        } else {
+
+            $reportText = '';
+
+            if(method_exists($result, 'getSitemapFile') && $result->getSitemapFile() !== null) {
+                $reportText .= sprintf('Sitemap file: %s <br><br>', $result->getSitemapFile());
+            }
+
+            foreach ($links as $key => $link) {
+
+                $reportText .= sprintf('%s <br> %s <br>', $link, $codes[$key]);
+            }
+
+            echo $reportText;
+        }
     }
 }

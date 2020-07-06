@@ -9,7 +9,7 @@ $report = new DisplayReport();
 $sitemap = new SitemapParser('sitemap.xml', false, 2);
 
 $elephant = new Elephant([
-    'base_uri' => 'https://hard-skills.ru',
+    'base_uri' => 'http://www.foo.com',
     'parser' => $sitemap,
     'report' => $report
 ]);

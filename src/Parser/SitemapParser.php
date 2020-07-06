@@ -2,13 +2,11 @@
 
 namespace Elephant\Parser;
 
+use Elephant\Result;
 use Elephant\Http\RequestClient;
 use Elephant\Validator\UriValidator;
 use GuzzleHttp\Exception\GuzzleException;
-use Elephant\Contracts\{
-    ParserInterface,
-    SettingsInterface
-};
+use Elephant\Contracts\{ParserInterface, ResultInterface, SettingsInterface};
 
 class SitemapParser implements ParserInterface
 {
@@ -91,6 +89,7 @@ class SitemapParser implements ParserInterface
      */
     protected function isXmlUrl(string $url) : bool
     {
+        // TODO поменять на explode и брать последний элемент, чтобы избавиться от файлов рода sitemap_file.xml-1.json
         $xml = strstr($url, ".xml");
         if($xml === ".xml") {
             return true;
@@ -152,23 +151,22 @@ class SitemapParser implements ParserInterface
      *
      * @param RequestClient $client
      * @param SettingsInterface $settings
-     * @return string
+     * @return ResultInterface
      * @throws GuzzleException
      */
-    public function parse(RequestClient $client, SettingsInterface $settings): string
+    public function parse(RequestClient $client, SettingsInterface $settings): ResultInterface
     {
         $this->client = $client;
         $this->settings = $settings;
         $this->setHttpSitemapBody();
 
         $linksCheck = 0;
-        $reportText = 'No links were found in the sitemap';
-
         $xml = new \SimpleXMLElement($this->sitemapBody);
+        $result = new Result();
+
+        $result->setSitemapFile($this->sitemapPath);
 
         if(0 !== $xml->count()) {
-
-            $reportText = '';
 
             foreach($xml->children() as $nodeName => $nodeValue) {
 
@@ -182,11 +180,11 @@ class SitemapParser implements ParserInterface
                     continue;
                 }
 
-                // TODO возвращать объект результата, который будет передаваться в отчет
-                // TODO плюс сделать возможность ходить по xml ссылкам в карте сайта
+                // TODO сделать возможность ходить по xml ссылкам в карте сайта
                 if(!$this->isXmlUrl($link)) {
                     $response = $this->client->get($link, ['http_errors' => false, 'allow_redirects' => false]);
-                    $reportText .= sprintf('%s <br> %s <br>', $link, $response->getStatusCode());
+                    $result->addLink($link);
+                    $result->addCode($response->getStatusCode());
                     $linksCheck++;
                 }
 
@@ -196,6 +194,6 @@ class SitemapParser implements ParserInterface
             }
         }
 
-        return $reportText;
+        return $result;
     }
 }

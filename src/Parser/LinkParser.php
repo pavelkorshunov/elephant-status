@@ -2,9 +2,9 @@
 
 namespace Elephant\Parser;
 
-use Elephant\Contracts\ParserInterface;
-use Elephant\Contracts\SettingsInterface;
+use Elephant\Result;
 use Elephant\Http\RequestClient;
+use Elephant\Contracts\{ParserInterface, ResultInterface, SettingsInterface};
 
 class LinkParser implements ParserInterface
 {
@@ -89,9 +89,9 @@ class LinkParser implements ParserInterface
      *
      * @param RequestClient $client
      * @param SettingsInterface $settings
-     * @return string
+     * @return ResultInterface
      */
-    public function parse(RequestClient $client, SettingsInterface $settings): string
+    public function parse(RequestClient $client, SettingsInterface $settings): ResultInterface
     {
         $this->parseAll();
 
@@ -106,6 +106,7 @@ class LinkParser implements ParserInterface
 
         // TODO доделать чтобы возвращал строку которую передаю в отчет. Здесь же или еще где-то отправляю запросы по ссылкам
 
-        return $filtered;
+//        return $filtered;
+        return new Result();
     }
 }

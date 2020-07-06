@@ -42,15 +42,14 @@ class Elephant
         $report = $checkSettings['report'];
 
         if($parser instanceof ParserInterface) {
-            $data = $parser->parse($this->client, $this->setting);
+            $result = $parser->parse($this->client, $this->setting);
         } else {
             throw new \LogicException('ParserInterface not implements for object ' . $parser);
         }
 
         if($report instanceof ReportInterface) {
-            $report->generate($data);
-        }
-        else {
+            $report->generate($result);
+        } else {
             throw new \LogicException('ReportInterface not implements for object ' . $report);
         }
     }
