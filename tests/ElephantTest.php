@@ -12,6 +12,6 @@ class ElephantTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('base_uri must be filled');
 
-        $elephant = new Elephant([]);
+        new Elephant([]);
     }
 }
