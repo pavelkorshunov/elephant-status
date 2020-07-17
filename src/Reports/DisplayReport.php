@@ -15,7 +15,7 @@ class DisplayReport implements ReportInterface
         $codes = $result->getCodes();
 
         if(empty($links)) {
-            echo 'No links were found in the sitemap';
+            echo 'Links not found';
         } else {
 
             $reportText = '';

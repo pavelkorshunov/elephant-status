@@ -1,0 +1,12 @@
+Sitemap file: sitemap.xml 
+
+https://hard-skills.ru/
+200
+https://hard-skills.ru/category/all/
+200
+https://hard-skills.ru/category/development/
+200
+https://hard-skills.ru/category/cms/
+200
+https://hard-skills.ru/category/other/
+200
