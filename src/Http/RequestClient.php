@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Данный файл часть пакета Links Errors
+ * Данный файл часть пакета ElephantStatus
  *
  * (c) Pavel Korshunov <info@hard-skills.ru>
  */

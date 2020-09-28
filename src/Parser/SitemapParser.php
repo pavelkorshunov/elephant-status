@@ -6,7 +6,11 @@ use Elephant\Result;
 use Elephant\Http\RequestClient;
 use Elephant\Validator\UriValidator;
 use GuzzleHttp\Exception\GuzzleException;
-use Elephant\Contracts\{ParserInterface, ResultInterface, SettingsInterface};
+use Elephant\Contracts\{
+    ParserInterface,
+    ResultInterface,
+    SettingsInterface
+};
 
 class SitemapParser implements ParserInterface
 {
@@ -89,12 +93,8 @@ class SitemapParser implements ParserInterface
      */
     protected function isXmlUrl(string $url) : bool
     {
-        // TODO поменять на explode и брать последний элемент, чтобы избавиться от файлов рода sitemap_file.xml-1.json
-        $xml = strstr($url, ".xml");
-        if($xml === ".xml") {
-            return true;
-        }
-        return false;
+        $xml = explode('.', $url);
+        return array_pop($xml) === "xml";
     }
 
     /**
@@ -181,6 +181,7 @@ class SitemapParser implements ParserInterface
                 }
 
                 // TODO сделать возможность ходить по xml ссылкам в карте сайта
+                // TODO добавить параметр, чтобы ссылки с файлами .xml тоже можно было проверять
                 if(!$this->isXmlUrl($link)) {
                     $response = $this->client->get($link, ['http_errors' => false, 'allow_redirects' => false]);
                     $result->addLink($link);
