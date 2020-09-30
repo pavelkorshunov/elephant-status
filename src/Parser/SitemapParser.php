@@ -15,6 +15,20 @@ use Elephant\Contracts\{
 class SitemapParser implements ParserInterface
 {
     /**
+     * Количество проверенных ссылок
+     *
+     * @var int
+     */
+    protected $linksCheck = 0;
+
+    /**
+     * Ссылки на файлы карт сайта
+     *
+     * @var array
+     */
+    protected $sitemapFiles = [];
+
+    /**
      * Главный файл карты сайта
      *
      * @var string
@@ -57,14 +71,23 @@ class SitemapParser implements ParserInterface
     protected $maxLinks;
 
     /**
+     * Указывает нужно ли дополнительно проваливаться по ссылкам с расширением .xml
+     *
+     * @var bool
+     */
+    protected $sitemapFollow;
+
+    /**
      * @param string $sitemapPath
      * @param bool $checkLinks
+     * @param bool $sitemapFollow
      * @param int $maxLinks
      */
-    public function __construct(string $sitemapPath = 'sitemap.xml', bool $checkLinks = false, int $maxLinks = 0)
+    public function __construct(string $sitemapPath = 'sitemap.xml', bool $checkLinks = false, bool $sitemapFollow = false, int $maxLinks = 0)
     {
         $this->sitemapPath = $sitemapPath;
         $this->checkLinks = $checkLinks;
+        $this->sitemapFollow = $sitemapFollow;
 
         if($maxLinks < 0) {
             $maxLinks = 0;
@@ -147,6 +170,61 @@ class SitemapParser implements ParserInterface
     }
 
     /**
+     * @param string|bool $sitemapBody
+     * @param ResultInterface $result
+     * @return ResultInterface
+     * @throws GuzzleException
+     */
+    protected function round(string $sitemapBody, ResultInterface $result)
+    {
+        //TODO сделать рефакторинг этого метода + попробовать улучшить проход по ссылкам. Вероятно сделать очередь или использовать поток php://temp
+        $xml = new \SimpleXMLElement($sitemapBody);
+
+        if(0 === $xml->count()) {
+            return $result;
+        }
+
+        foreach($xml->children() as $nodeName => $nodeValue) {
+
+            if(!isset($nodeValue->loc)) {
+                continue;
+            }
+
+            $link = trim($nodeValue->loc->__toString());
+
+            if(!$this->checkLink($link)) {
+                continue;
+            }
+
+            if($this->isXmlUrl($link) && $this->sitemapFollow) {
+                array_push($this->sitemapFiles, $link);
+            }
+
+            if($this->maxLinks > 0 && $this->linksCheck >= $this->maxLinks) {
+                break;
+            }
+
+            if(!$this->isXmlUrl($link)) {
+                $response = $this->client->get($link, ['http_errors' => false, 'allow_redirects' => false]);
+                $result->addLink($link);
+                $result->addCode($response->getStatusCode());
+                $this->linksCheck++;
+            }
+        }
+
+        if($this->sitemapFollow && count($this->sitemapFiles) > 0) {
+
+            $path = array_shift($this->sitemapFiles);
+            $response = $this->client->request("GET", $path);
+            $localSitemapBody = (string) $response->getBody();
+
+            return $this->round($localSitemapBody, $result);
+        }
+
+        return $result;
+    }
+
+    /**
      * Парсинг карты сайта
      *
      * @param RequestClient $client
@@ -160,41 +238,9 @@ class SitemapParser implements ParserInterface
         $this->settings = $settings;
         $this->setHttpSitemapBody();
 
-        $linksCheck = 0;
-        $xml = new \SimpleXMLElement($this->sitemapBody);
         $result = new Result();
-
         $result->setSitemapFile($this->sitemapPath);
 
-        if(0 !== $xml->count()) {
-
-            foreach($xml->children() as $nodeName => $nodeValue) {
-
-                if(!isset($nodeValue->loc)) {
-                    continue;
-                }
-
-                $link = trim($nodeValue->loc->__toString());
-
-                if(!$this->checkLink($link)) {
-                    continue;
-                }
-
-                // TODO сделать возможность ходить по xml ссылкам в карте сайта
-                // TODO добавить параметр, чтобы ссылки с файлами .xml тоже можно было проверять
-                if(!$this->isXmlUrl($link)) {
-                    $response = $this->client->get($link, ['http_errors' => false, 'allow_redirects' => false]);
-                    $result->addLink($link);
-                    $result->addCode($response->getStatusCode());
-                    $linksCheck++;
-                }
-
-                if($this->maxLinks > 0 && $linksCheck >= $this->maxLinks) {
-                    break;
-                }
-            }
-        }
-
-        return $result;
+        return $this->round($this->sitemapBody, $result);
     }
 }
