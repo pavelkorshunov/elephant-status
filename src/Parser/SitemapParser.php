@@ -103,8 +103,8 @@ class SitemapParser implements ParserInterface
      */
     protected function setHttpSitemapBody(): void
     {
-        $path = "/" . $this->sitemapPath;
-        $response = $this->client->request("GET", $path);
+        $path = '/' . $this->sitemapPath;
+        $response = $this->client->request('GET', $path);
         $this->sitemapBody = (string) $response->getBody();
     }
 
@@ -117,7 +117,7 @@ class SitemapParser implements ParserInterface
     protected function isXmlUrl(string $url) : bool
     {
         $xml = explode('.', $url);
-        return array_pop($xml) === "xml";
+        return array_pop($xml) === 'xml';
     }
 
     /**
@@ -170,14 +170,36 @@ class SitemapParser implements ParserInterface
     }
 
     /**
+     * Отправляет GET запрос на $url и возвращает тело ответа
+     *
+     * @param string $url
+     * @param bool $check
+     * @return string
+     * @throws GuzzleException
+     */
+    private function requestXmlUrl(string $url, bool $check = true): string
+    {
+        if($check === true) {
+            $validator = new UriValidator($url);
+            $parseUrl = $validator->getParseUrl();
+            $url = $parseUrl['path'];
+        }
+
+        $response = $this->client->request('GET', $url);
+        return (string) $response->getBody();
+    }
+
+    /**
+     * Выполняет рекурсивный проход по ссылкам
+     *
      * @param string|bool $sitemapBody
      * @param ResultInterface $result
      * @return ResultInterface
      * @throws GuzzleException
      */
-    protected function round(string $sitemapBody, ResultInterface $result)
+    protected function round(string $sitemapBody, ResultInterface $result): ResultInterface
     {
-        //TODO сделать рефакторинг этого метода + попробовать улучшить проход по ссылкам. Вероятно сделать очередь или использовать поток php://temp
+        // TODO поменять синхронные запросы на асинхронные и добавить ссылки на файлы карт сайта
         $xml = new \SimpleXMLElement($sitemapBody);
 
         if(0 === $xml->count()) {
@@ -213,12 +235,8 @@ class SitemapParser implements ParserInterface
         }
 
         if($this->sitemapFollow && count($this->sitemapFiles) > 0) {
-
             $path = array_shift($this->sitemapFiles);
-            $response = $this->client->request("GET", $path);
-            $localSitemapBody = (string) $response->getBody();
-
-            return $this->round($localSitemapBody, $result);
+            return $this->round($this->requestXmlUrl($path), $result);
         }
 
         return $result;
