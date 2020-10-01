@@ -54,6 +54,16 @@ class UriValidator implements ValidatorInterface
     }
 
     /**
+     * Возвращает закрытое свойство $parseUrl
+     *
+     * @return array|false|int|string|null
+     */
+    public function getParseUrl()
+    {
+        return $this->parseUrl;
+    }
+
+    /**
      * Проверяет url на валидность
      *
      * @return bool
