@@ -16,14 +16,15 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.3",
         "ext-dom": "*",
         "ext-mbstring": "*",
         "ext-simplexml": "*",
-        "guzzlehttp/guzzle": "6.3.3"
+        "guzzlehttp/guzzle": "7.0",
+        "twig/twig": "3.0.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.4"
     },
     "suggest": {
         "guzzlehttp/guzzle": "Required for http requests"

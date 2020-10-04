@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Report</title>
+    <style>
+        body {
+            color: #fff;
+            font-size: 14px;
+            font-family: monospace;
+            background-color: #353535;
+        }
+        .main-link {
+            color: #007bff;
+            padding-bottom: 3px;
+            text-decoration: none;
+            border-bottom: 1px dashed;
+        }
+        .line {
+            margin: 14px 0;
+        }
+        .code-green {
+            color: #358235;
+        }
+        .code-yellow {
+            color: #cece00;
+        }
+        .code-red {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    {% if sitemap is not empty %}
+        <b>Sitemap file:</b> {{ sitemap }}
+        <hr>
+    {% endif %}
+
+    {% if links|length == 0 %}
+        <p>Links not found</p>
+    {% endif %}
+
+    {% for key, link in links %}
+        <p class="line">
+            <a href="{{ link }}" class="main-link" target="_blank">
+                {{ link }}
+            </a>
+        </p>
+        {% if codes[key] < 300 %}
+            <span>Status Code - <strong class="code-green">{{ codes[key] }}</strong></span>
+        {% elseif codes[key] < 400 %}
+            <span>Status Code - <strong class="code-yellow">{{ codes[key] }}</strong></span>
+        {% else %}
+            <span>Status Code - <strong class="code-red">{{ codes[key] }}</strong></span>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
