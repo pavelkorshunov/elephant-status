@@ -35,10 +35,6 @@
         <hr>
     {% endif %}
 
-    {% if links|length == 0 %}
-        <p>Links not found</p>
-    {% endif %}
-
     {% for key, link in links %}
         <p class="line">
             <a href="{{ link }}" class="main-link" target="_blank">
@@ -52,6 +48,9 @@
         {% else %}
             <span>Status Code - <strong class="code-red">{{ codes[key] }}</strong></span>
         {% endif %}
+
+    {% else %}
+        <p>Links not found</p>
     {% endfor %}
 </body>
 </html>
