@@ -16,7 +16,6 @@ class FileReport implements ReportInterface
         $this->filePath = $path;
     }
 
-    // TODO метод очень похож на метод класса DisplayReport. Сделать виды которые здесь вызывать, чтобы избавиться от дублирования
     public function generate(ResultInterface $result)
     {
         $links = $result->getLinks();
