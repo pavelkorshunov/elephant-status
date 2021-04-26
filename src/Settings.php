@@ -59,13 +59,8 @@ class Settings implements SettingsInterface
      */
     private function defaultSettings(array $settings)
     {
-        $this->settings['report'] = !isset($settings['report']) ?
-            new DisplayReport() :
-            $settings['report'];
-
-        $this->settings['parser'] = !isset($settings['parser']) ?
-            new SitemapParser() :
-            $settings['parser'];
+        $this->settings['report'] = $settings['report'] ?? new DisplayReport();
+        $this->settings['parser'] = $settings['parser'] ?? new SitemapParser();
     }
 
     /**
